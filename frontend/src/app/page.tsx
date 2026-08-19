@@ -36,8 +36,15 @@ export default function Home() {
 
           {/* Desktop Nav */}
           <nav className="hidden lg:flex items-center gap-6 text-sm font-medium text-amber-900/70">
-            <a href="#pujas" className="hover:text-orange-600 transition-colors">{t.navServices}</a>
-            <a href="#pandits" className="hover:text-orange-600 transition-colors">{t.navPandits}</a>
+            <Link href="/pujas" className="hover:text-orange-600 transition-colors">
+              {language === "hi" ? "पूजा सूची" : "All Pujas"}
+            </Link>
+            <Link href="/pandits" className="hover:text-orange-600 transition-colors">
+              {language === "hi" ? "पंडित खोजें" : "Find Pandits"}
+            </Link>
+            <Link href="/pandit/onboard" className="hover:text-orange-600 transition-colors text-orange-700 font-semibold">
+              {language === "hi" ? "पंडित पंजीकरण" : "Join as Pandit"}
+            </Link>
             <a href="#how-it-works" className="hover:text-orange-600 transition-colors">{t.navHowItWorks}</a>
             <a href="#faq" className="hover:text-orange-600 transition-colors">{t.navFaq}</a>
           </nav>

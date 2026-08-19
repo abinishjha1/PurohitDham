@@ -14,15 +14,22 @@ from app.middleware.security_headers import SecurityHeadersMiddleware
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application startup and shutdown events."""
-    # Startup — create database tables (development only)
+    # Startup — create database tables and seed pujas (development only)
     if settings.is_development:
-        from app.database import engine
+        from app.database import engine, async_session_factory
         from app.models.base import Base
         # Import all models so they register with Base.metadata
         import app.models.user  # noqa: F401
+        import app.models.puja  # noqa: F401
+        import app.models.pandit  # noqa: F401
+        from app.services.puja_service import seed_pujas_and_categories_if_empty
 
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
+
+        # Seed initial authentic Vedic pujas if empty
+        async with async_session_factory() as session:
+            await seed_pujas_and_categories_if_empty(session)
 
     yield
     # Shutdown
@@ -52,7 +59,7 @@ app.add_middleware(
 app.add_middleware(SecurityHeadersMiddleware)
 
 
-# Health check endpoint (outside of versioned API)
+# Health check endpoint
 @app.get("/health", tags=["Health"])
 async def health_check():
     return {"status": "healthy", "app": settings.APP_NAME}

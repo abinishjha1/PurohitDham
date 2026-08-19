@@ -8,6 +8,17 @@ from app.schemas.auth import (
     UserResponse,
 )
 from app.schemas.user import PasswordChange, UserUpdate
+from app.schemas.puja import (
+    PujaCategoryResponse,
+    PujaListResponse,
+    PujaServiceDetail,
+    PujaServiceSummary,
+)
+from app.schemas.pandit import (
+    PanditListResponse,
+    PanditOnboardRequest,
+    PanditProfileResponse,
+)
 
 __all__ = [
     "AuthResponse",
@@ -18,4 +29,11 @@ __all__ = [
     "UserResponse",
     "PasswordChange",
     "UserUpdate",
+    "PujaCategoryResponse",
+    "PujaListResponse",
+    "PujaServiceDetail",
+    "PujaServiceSummary",
+    "PanditListResponse",
+    "PanditOnboardRequest",
+    "PanditProfileResponse",
 ]

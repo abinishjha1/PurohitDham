@@ -3,37 +3,41 @@
 export interface PujaCategory {
   id: string;
   name: string;
-  name_hindi: string | null;
+  name_hi: string;
   slug: string;
-  description: string | null;
-  image_url: string | null;
+  icon: string;
+  description?: string;
   display_order: number;
+  puja_count: number;
 }
 
-export interface PujaService {
+export interface PujaServiceSummary {
   id: string;
   category_id: string;
-  category: PujaCategory;
   name: string;
-  name_hindi: string | null;
+  name_hi: string;
   slug: string;
-  description: string | null;
-  detailed_description: string | null;
+  sub_title?: string;
+  sub_title_hi?: string;
   duration_minutes: number;
-  base_price: number;
-  image_url: string | null;
-  samagri_included: boolean;
-  samagri_list: string | null;
+  base_dakshina: number;
+  icon: string;
+  badge?: string;
+  is_popular: boolean;
+  category_name?: string;
+  benefits: string[];
 }
 
-export interface PujaServiceListItem {
-  id: string;
-  name: string;
-  name_hindi: string | null;
-  slug: string;
-  description: string | null;
-  duration_minutes: number;
-  base_price: number;
-  image_url: string | null;
-  category_name: string;
+export interface PujaServiceDetail extends PujaServiceSummary {
+  description: string;
+  description_hi: string;
+  has_samagri_included: boolean;
+  samagri_list: Array<{ item: string; qty: string }>;
+  vidhi_steps: Array<{ step: number; title: string; desc: string }>;
+  packages: Array<{ name: string; price: number; desc: string }>;
+}
+
+export interface PujaListResponse {
+  items: PujaServiceSummary[];
+  total: number;
 }

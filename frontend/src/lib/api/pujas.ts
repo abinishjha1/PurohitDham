@@ -1,30 +1,33 @@
 /**
- * Puja services API functions
+ * Puja Catalog API functions
  */
 
 import apiClient from "./client";
-import type { PujaCategory, PujaService, PujaServiceListItem } from "@/types/puja";
-import type { PaginatedResponse } from "@/types/common";
+import type {
+  PujaCategory,
+  PujaListResponse,
+  PujaServiceDetail,
+} from "@/types/puja";
 
 export async function getCategories(): Promise<PujaCategory[]> {
-  const response = await apiClient.get<PujaCategory[]>("/pujas/categories");
+  const response = await apiClient.get<PujaCategory[]>("/categories");
   return response.data;
 }
 
-export async function getPujaServices(params?: {
-  category_id?: string;
+export async function getPujas(params?: {
+  category?: string;
   search?: string;
-  page?: number;
-  page_size?: number;
-}): Promise<PaginatedResponse<PujaServiceListItem>> {
-  const response = await apiClient.get<PaginatedResponse<PujaServiceListItem>>(
-    "/pujas",
-    { params }
-  );
+  popular?: boolean;
+  limit?: number;
+  offset?: number;
+}): Promise<PujaListResponse> {
+  const response = await apiClient.get<PujaListResponse>("/pujas", {
+    params,
+  });
   return response.data;
 }
 
-export async function getPujaBySlug(slug: string): Promise<PujaService> {
-  const response = await apiClient.get<PujaService>(`/pujas/${slug}`);
+export async function getPujaBySlug(slug: string): Promise<PujaServiceDetail> {
+  const response = await apiClient.get<PujaServiceDetail>(`/pujas/${slug}`);
   return response.data;
 }
