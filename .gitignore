@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# Environment files
+.env
+.env.local
+.env.production
+!.env.example
+!.env.local.example
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Next.js
+frontend/.next/
+frontend/out/
+
+# Python virtual environments
+backend/venv/
+backend/.venv/
+
+# Docker
+.docker/
+
+# Logs
+*.log
+
+# Database
+*.sql.bak
+
+# Uploads (local dev)
+backend/uploads/
+
+# Coverage
+coverage/
+htmlcov/
+.coverage
+
+# OS
+Thumbs.db
