@@ -94,7 +94,13 @@ export default function RegisterPage() {
         phone: phone.trim(),
         role,
       });
-      router.push("/");
+
+      // If registered as Pandit, redirect directly to Pandit Onboarding form
+      if (role === UserRole.PANDIT) {
+        router.push("/pandit/onboard");
+      } else {
+        router.push("/");
+      }
     } catch (err: any) {
       const msg =
         err?.response?.data?.detail || "Registration failed. Please try again.";
@@ -115,7 +121,11 @@ export default function RegisterPage() {
             try {
               setIsLoading(true);
               await googleLogin({ id_token: response.credential, role });
-              router.push("/");
+              if (role === UserRole.PANDIT) {
+                router.push("/pandit/onboard");
+              } else {
+                router.push("/");
+              }
             } catch (err: any) {
               const msg = err?.response?.data?.detail || "Google sign-up failed.";
               setError(msg);
@@ -155,13 +165,15 @@ export default function RegisterPage() {
             {/* Header */}
             <div className="text-center mb-4">
               <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-orange-50 border border-orange-200/80 mb-2">
-                <span className="text-xl">🪔</span>
+                <span className="text-xl">{role === UserRole.PANDIT ? "🕉️" : "🪔"}</span>
               </div>
               <h1 className="text-xl font-bold text-stone-900 tracking-tight">
-                Create an Account
+                {role === UserRole.PANDIT ? "Pandit Ji Registration" : "Create an Account"}
               </h1>
               <p className="text-xs text-stone-500 mt-0.5">
-                Join Purohitdham for trusted Vedic & Puja services
+                {role === UserRole.PANDIT
+                  ? "Step 1 of 2: Create account, then set up GPS & Puja Skills"
+                  : "Join Purohitdham for trusted Vedic & Puja services"}
               </p>
             </div>
 
@@ -202,6 +214,16 @@ export default function RegisterPage() {
                 </button>
               </div>
             </div>
+
+            {/* Notice for Pandit Ji */}
+            {role === UserRole.PANDIT && (
+              <div className="mb-3.5 p-2.5 rounded-lg bg-orange-50 border border-orange-200 text-[11px] text-orange-950 flex items-start gap-2">
+                <span>ℹ️</span>
+                <span>
+                  After signing up, you will be taken to the <strong>Pandit Onboarding Form</strong> to configure your Gurukul Education, Live GPS Location, and Puja Specializations.
+                </span>
+              </div>
+            )}
 
             {/* Google sign up button */}
             <button
@@ -397,6 +419,8 @@ export default function RegisterPage() {
                     <svg className="animate-spin h-3.5 w-3.5" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" /></svg>
                     Creating Account...
                   </span>
+                ) : role === UserRole.PANDIT ? (
+                  "Continue to Pandit Onboarding (Step 1 of 2) →"
                 ) : (
                   "Create Account"
                 )}
