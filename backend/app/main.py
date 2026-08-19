@@ -27,9 +27,11 @@ async def lifespan(app: FastAPI):
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
 
-        # Seed initial authentic Vedic pujas if empty
+        # Seed initial authentic Vedic pujas and default Super Admin if empty
         async with async_session_factory() as session:
             await seed_pujas_and_categories_if_empty(session)
+            from app.services.auth_service import seed_default_admin_if_not_exists
+            await seed_default_admin_if_not_exists(session)
 
     yield
     # Shutdown

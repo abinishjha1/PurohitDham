@@ -287,3 +287,20 @@ async def get_current_user_from_token(
         )
 
     return user
+
+
+async def seed_default_admin_if_not_exists(db: AsyncSession) -> None:
+    """Seed default Super Admin credentials on development startup if missing."""
+    repo = UserRepository(db)
+    admin_email = "admin@purohitdham.com"
+    existing = await repo.get_by_email(admin_email)
+    if not existing:
+        await repo.create(
+            email=admin_email,
+            password_hash=hash_password("Admin@123456"),
+            full_name="Purohitdham Administrator",
+            phone="9999999999",
+            role=Role.SUPER_ADMIN,
+        )
+        await db.commit()
+
