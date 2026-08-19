@@ -3,6 +3,7 @@ from app.models.base import Base, BaseModel
 from app.models.user import User, Role
 from app.models.puja import PujaCategory, PujaService
 from app.models.pandit import PanditProfile
+from app.models.booking import Booking, BookingStatus, PaymentStatus
 
 __all__ = [
     "Base",
@@ -12,4 +13,7 @@ __all__ = [
     "PujaCategory",
     "PujaService",
     "PanditProfile",
+    "Booking",
+    "BookingStatus",
+    "PaymentStatus",
 ]
