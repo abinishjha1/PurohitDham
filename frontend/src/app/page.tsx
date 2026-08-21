@@ -1,161 +1,21 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useLanguage } from "@/contexts/language-context";
-import { useAuth } from "@/contexts/auth-context";
-import { LanguageToggle } from "@/components/vedic/LanguageToggle";
+import { SiteHeader } from "@/components/layout/SiteHeader";
+import { SiteFooter } from "@/components/layout/SiteFooter";
 
 export default function Home() {
-  const { t, language } = useLanguage();
-  const { user, isAuthenticated, logout } = useAuth();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { t } = useLanguage();
 
   return (
     <div className="flex flex-col min-h-screen bg-amber-50/30">
-      {/* ═══════════════════════════════════════════════════════════════════
-          HEADER — Clean, simple, with Login/Register
-      ═══════════════════════════════════════════════════════════════════ */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-amber-100 shadow-sm">
-        <div className="max-w-7xl mx-auto flex items-center justify-between h-16 px-4 sm:px-6">
-          {/* Brand */}
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            <span className="text-orange-600 text-xl sm:text-2xl font-bold leading-none">ॐ</span>
-            <span className="text-lg sm:text-xl font-extrabold tracking-tight text-amber-950">
-              {language === "hi" ? (
-                <>पुरोहित<span className="text-orange-600">धाम</span></>
-              ) : (
-                <>Purohit<span className="text-orange-600">dham</span></>
-              )}
-            </span>
-          </Link>
-
-          {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-6 text-sm font-medium text-amber-900/70">
-            <Link href="/pujas" className="hover:text-orange-600 transition-colors">
-              {language === "hi" ? "पूजा सूची" : "All Pujas"}
-            </Link>
-            <Link href="/pandits" className="hover:text-orange-600 transition-colors">
-              {language === "hi" ? "पंडित खोजें" : "Find Pandits"}
-            </Link>
-            <Link href="/pandit/onboard" className="hover:text-orange-600 transition-colors text-orange-700 font-semibold">
-              {language === "hi" ? "पंडित पंजीकरण" : "Join as Pandit"}
-            </Link>
-            <a href="#how-it-works" className="hover:text-orange-600 transition-colors">{t.navHowItWorks}</a>
-            <a href="#faq" className="hover:text-orange-600 transition-colors">{t.navFaq}</a>
-          </nav>
-
-          {/* Right: Language + Auth + Mobile toggle */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            <LanguageToggle />
-
-            {isAuthenticated ? (
-              <div className="hidden sm:flex items-center gap-2">
-                <span className="text-sm text-amber-800 font-medium truncate max-w-[120px]">
-                  🙏 {user?.full_name?.split(" ")[0]}
-                </span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => logout()}
-                  className="text-xs border-amber-200 text-amber-800 hover:bg-amber-50"
-                >
-                  Logout
-                </Button>
-              </div>
-            ) : (
-              <div className="hidden sm:flex items-center gap-2">
-                <Link href="/login">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="text-xs border-amber-200 text-amber-800 hover:bg-amber-50"
-                  >
-                    {language === "hi" ? "लॉगिन" : "Login"}
-                  </Button>
-                </Link>
-                <Link href="/register">
-                  <Button
-                    size="sm"
-                    className="text-xs bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white font-semibold shadow-sm"
-                  >
-                    {language === "hi" ? "रजिस्टर" : "Sign Up"}
-                  </Button>
-                </Link>
-              </div>
-            )}
-
-            {/* Mobile hamburger */}
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 rounded-lg text-amber-800 hover:bg-amber-100 transition-colors"
-              aria-label="Toggle menu"
-            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                {mobileMenuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                )}
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile menu */}
-        {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-amber-100 bg-white px-4 py-4 shadow-lg">
-            <nav className="flex flex-col gap-1">
-              {[
-                { href: "#pujas", label: t.navServices },
-                { href: "#pandits", label: t.navPandits },
-                { href: "#how-it-works", label: t.navHowItWorks },
-                { href: "#faq", label: t.navFaq },
-              ].map((item) => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="py-2.5 px-3 rounded-lg text-sm font-medium text-amber-900 hover:bg-amber-50 transition-colors"
-                >
-                  {item.label}
-                </a>
-              ))}
-              <Separator className="my-2 bg-amber-100" />
-              {isAuthenticated ? (
-                <div className="flex flex-col gap-2">
-                  <span className="px-3 text-sm text-amber-800">🙏 {user?.full_name}</span>
-                  <Button
-                    variant="outline"
-                    onClick={() => { logout(); setMobileMenuOpen(false); }}
-                    className="border-amber-200 text-amber-800"
-                  >
-                    Logout
-                  </Button>
-                </div>
-              ) : (
-                <div className="flex flex-col gap-2">
-                  <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-                    <Button variant="outline" className="w-full border-amber-200 text-amber-800">
-                      {language === "hi" ? "लॉगिन" : "Login"}
-                    </Button>
-                  </Link>
-                  <Link href="/register" onClick={() => setMobileMenuOpen(false)}>
-                    <Button className="w-full bg-gradient-to-r from-orange-600 to-amber-600 text-white font-semibold">
-                      {language === "hi" ? "रजिस्टर करें" : "Create Account"}
-                    </Button>
-                  </Link>
-                </div>
-              )}
-            </nav>
-          </div>
-        )}
-      </header>
+      <SiteHeader />
 
       <main className="flex-1">
         {/* ═══════════════════════════════════════════════════════════════════
@@ -236,48 +96,49 @@ export default function Home() {
               {t.services.map((service) => (
                 <Card
                   key={service.name}
-                  className="group bg-white border border-amber-100 hover:border-orange-300 hover:shadow-lg hover:shadow-orange-500/5 transition-all duration-300 rounded-xl overflow-hidden"
+                  className="group flex flex-col bg-white border border-amber-100 hover:border-orange-300 hover:shadow-lg hover:shadow-orange-500/5 transition-all duration-300 rounded-xl overflow-hidden"
                 >
                   {/* Accent bar */}
                   <div className="h-1 bg-gradient-to-r from-orange-500 to-amber-500" />
-                  <CardContent className="p-4 sm:p-5">
-                    <div className="flex items-start justify-between mb-3">
-                      <span className="text-2xl p-2 rounded-lg bg-amber-50 border border-amber-100">{service.icon}</span>
-                      <Badge variant="secondary" className="bg-amber-50 text-amber-800 border-amber-200 text-[10px]">
-                        {service.badge}
-                      </Badge>
-                    </div>
-                    <h3 className="text-base font-bold text-amber-950 group-hover:text-orange-600 transition-colors">
-                      {service.name}
-                    </h3>
-                    <p className="text-xs text-amber-600/60 mb-2">{service.subName}</p>
-                    <p className="text-xs text-amber-700/50 line-clamp-2 mb-3">{service.description}</p>
-
-                    <div className="flex items-center gap-1.5 text-[11px] text-emerald-700 bg-emerald-50 p-1.5 rounded-md mb-3">
-                      <span>🌿</span><span className="truncate">{service.samagri}</span>
-                    </div>
-
-                    <Separator className="mb-3 bg-amber-100" />
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-xs text-amber-600">⏱ {service.duration}</span>
-                      <div className="text-right">
-                        <span className="text-[10px] text-amber-500 block">{t.dakshinaLabel}</span>
-                        <span className="text-lg font-extrabold text-orange-600">{service.price}</span>
+                  <CardContent className="flex flex-col flex-1 p-4 sm:p-5">
+                    {/* ── Top content (grows to fill space) ── */}
+                    <div className="flex-1">
+                      <div className="flex items-start justify-between mb-3">
+                        <span className="text-2xl p-2 rounded-lg bg-amber-50 border border-amber-100">{service.icon}</span>
+                        <Badge variant="secondary" className="bg-amber-50 text-amber-800 border-amber-200 text-[10px]">
+                          {service.badge}
+                        </Badge>
                       </div>
+                      <h3 className="text-base font-bold text-amber-950 group-hover:text-orange-600 transition-colors">
+                        {service.name}
+                      </h3>
+                      <p className="text-xs text-amber-600/60 mb-2">{service.subName}</p>
+                      <p className="text-xs text-amber-700/50 line-clamp-2">{service.description}</p>
                     </div>
-                    <Button size="sm" className="w-full bg-orange-600 hover:bg-orange-700 text-white text-xs font-semibold rounded-lg">
-                      {t.btnBookThisPuja}
-                    </Button>
+
+                    {/* ── Bottom pinned section (samagri + price + CTA) ── */}
+                    <div className="mt-3">
+                      <div className="flex items-center gap-1.5 text-[11px] text-emerald-700 bg-emerald-50 p-1.5 rounded-md mb-3">
+                        <span>🌿</span><span className="truncate">{service.samagri}</span>
+                      </div>
+                      <Separator className="mb-3 bg-amber-100" />
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-xs text-amber-600">⏱ {service.duration}</span>
+                        <div className="text-right">
+                          <span className="text-[10px] text-amber-500 block">{t.dakshinaLabel}</span>
+                          <span className="text-lg font-extrabold text-orange-600">{service.price}</span>
+                        </div>
+                      </div>
+                      <Button size="sm" className="w-full bg-orange-600 hover:bg-orange-700 text-white text-xs font-semibold rounded-lg">
+                        {t.btnBookThisPuja}
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               ))}
             </div>
 
-            <div className="mt-8 sm:mt-10 text-center">
-              <Button variant="outline" className="border-orange-300 text-orange-700 hover:bg-orange-50 font-semibold px-6">
-                {t.servicesBtnAll}
-              </Button>
-            </div>
+
           </div>
         </section>
 
@@ -459,71 +320,7 @@ export default function Home() {
         </section>
       </main>
 
-      {/* ═══════════════════════════════════════════════════════════════════
-          FOOTER
-      ═══════════════════════════════════════════════════════════════════ */}
-      <footer className="bg-amber-950 text-amber-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Brand */}
-            <div>
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-orange-400 text-xl font-bold">ॐ</span>
-                <span className="text-lg font-bold">{t.brandName}</span>
-              </div>
-              <p className="text-xs text-amber-400/70 leading-relaxed mb-3">{t.footerDesc}</p>
-              <p className="text-[11px] text-amber-500/60 italic">{t.footerMotto}</p>
-            </div>
-
-            {/* Services */}
-            <div>
-              <h4 className="font-bold text-amber-300 text-xs uppercase tracking-wider mb-3">{t.footerColServices}</h4>
-              <ul className="space-y-1.5 text-xs text-amber-400/70">
-                {t.pujaOptions.slice(0, 6).map((puja, i) => (
-                  <li key={i}><a href="#pujas" className="hover:text-amber-200 transition-colors">{puja}</a></li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Sanskars */}
-            <div>
-              <h4 className="font-bold text-amber-300 text-xs uppercase tracking-wider mb-3">{t.footerColSanskars}</h4>
-              <ul className="space-y-1.5 text-xs text-amber-400/70">
-                <li><a href="#" className="hover:text-amber-200 transition-colors">{language === "hi" ? "वैदिक विवाह संस्कार" : "Vedic Marriage"}</a></li>
-                <li><a href="#" className="hover:text-amber-200 transition-colors">{language === "hi" ? "नामकरण संस्कार" : "Naamkaran"}</a></li>
-                <li><a href="#" className="hover:text-amber-200 transition-colors">{language === "hi" ? "यज्ञोपवीत संस्कार" : "Yagnopavit"}</a></li>
-                <li><a href="#" className="hover:text-amber-200 transition-colors">{language === "hi" ? "श्राद्ध विधि" : "Shradh Vidhi"}</a></li>
-              </ul>
-            </div>
-
-            {/* Contact */}
-            <div>
-              <h4 className="font-bold text-amber-300 text-xs uppercase tracking-wider mb-3">{t.footerColSupport}</h4>
-              <ul className="space-y-1.5 text-xs text-amber-400/70 mb-4">
-                <li>{t.footerHelpline}</li>
-                <li>{t.footerEmail}</li>
-                <li>{t.footerTiming}</li>
-              </ul>
-              <Link href="/register">
-                <Button size="sm" variant="outline" className="w-full text-xs border-amber-600 bg-amber-900/50 hover:bg-amber-800 text-amber-200">
-                  {t.footerBtnJoinPandit}
-                </Button>
-              </Link>
-            </div>
-          </div>
-
-          <Separator className="my-6 bg-amber-800/60" />
-
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-amber-500/60 text-center sm:text-left">
-            <p>{t.footerCopyright}</p>
-            <p className="flex items-center gap-2">
-              <span>{t.footerPeaceChant}</span>
-              <span>•</span>
-              <span>{t.footerMadeWith}</span>
-            </p>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

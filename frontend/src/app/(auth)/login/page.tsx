@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
+import { useLanguage } from "@/contexts/language-context";
+import { UserRole } from "@/types/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,6 +13,7 @@ import { Label } from "@/components/ui/label";
 export default function LoginPage() {
   const router = useRouter();
   const { login, googleLogin } = useAuth();
+  const { language } = useLanguage();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,28 +30,39 @@ export default function LoginPage() {
     setError("");
 
     if (!email.trim()) {
-      setError("Please enter your email address.");
+      setError(language === "hi" ? "कृपया अपना ईमेल पता दर्ज करें।" : "Please enter your email address.");
       return;
     }
 
     if (!isValidEmail(email)) {
-      setError("Please enter a valid email address.");
+      setError(language === "hi" ? "कृपया एक मान्य ईमेल पता दर्ज करें।" : "Please enter a valid email address.");
       return;
     }
 
     if (!password) {
-      setError("Please enter your password.");
+      setError(language === "hi" ? "कृपया अपना पासवर्ड दर्ज करें।" : "Please enter your password.");
       return;
     }
 
     setIsLoading(true);
 
     try {
-      await login({ email: email.trim().toLowerCase(), password });
-      router.push("/");
+      const response = await login({ email: email.trim().toLowerCase(), password });
+      // Role-based redirect after login
+      const userRole = response.user.role;
+      if (userRole === UserRole.PANDIT) {
+        router.push("/pandit/onboard");
+      } else if (userRole === UserRole.ADMIN || userRole === UserRole.SUPER_ADMIN) {
+        router.push("/admin");
+      } else {
+        router.push("/");
+      }
     } catch (err: any) {
       const msg =
-        err?.response?.data?.detail || "Login failed. Please check your credentials.";
+        err?.response?.data?.detail ||
+        (language === "hi"
+          ? "लॉगिन असफल रहा। कृपया अपनी जानकारी जाँचें।"
+          : "Login failed. Please check your credentials.");
       setError(msg);
     } finally {
       setIsLoading(false);
@@ -68,7 +82,9 @@ export default function LoginPage() {
               await googleLogin({ id_token: response.credential, role: "CUSTOMER" });
               router.push("/");
             } catch (err: any) {
-              const msg = err?.response?.data?.detail || "Google login failed.";
+              const msg =
+                err?.response?.data?.detail ||
+                (language === "hi" ? "Google लॉगिन असफल रहा।" : "Google login failed.");
               setError(msg);
             } finally {
               setIsLoading(false);
@@ -77,10 +93,18 @@ export default function LoginPage() {
         });
         client.prompt();
       } else {
-        setError("Google Sign-In is not initialized. Please try email login.");
+        setError(
+          language === "hi"
+            ? "Google साइन-इन तैयार नहीं है। कृपया ईमेल से लॉगिन करें।"
+            : "Google Sign-In is not initialized. Please try email login."
+        );
       }
     } catch {
-      setError("Google Sign-In failed. Please try again.");
+      setError(
+        language === "hi"
+          ? "Google साइन-इन असफल रहा। कृपया पुनः प्रयास करें।"
+          : "Google Sign-In failed. Please try again."
+      );
     }
   };
 
@@ -91,7 +115,7 @@ export default function LoginPage() {
 
       <div className="w-full max-w-[420px]">
         {/* Card */}
-        <div className="bg-white rounded-2xl shadow-xl shadow-stone-900/5 border border-stone-200/80 overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-xl shadow-amber-900/5 border border-amber-100 overflow-hidden">
           {/* Top Royal Vedic Accent Bar */}
           <div className="h-1 bg-gradient-to-r from-red-800 via-amber-500 to-orange-600" />
 
@@ -101,11 +125,13 @@ export default function LoginPage() {
               <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-orange-50 border border-orange-200/80 mb-2">
                 <span className="text-xl">🪔</span>
               </div>
-              <h1 className="text-xl font-bold text-stone-900 tracking-tight">
-                Welcome Back
+              <h1 className="text-xl font-bold text-amber-950 tracking-tight">
+                {language === "hi" ? "पुनः स्वागत है" : "Welcome Back"}
               </h1>
-              <p className="text-xs text-stone-500 mt-0.5">
-                Sign in to your Purohitdham account
+              <p className="text-xs text-amber-600 mt-0.5">
+                {language === "hi"
+                  ? "अपने पुरोहितधाम खाते में साइन इन करें"
+                  : "Sign in to your Purohitdham account"}
               </p>
             </div>
 
@@ -122,7 +148,7 @@ export default function LoginPage() {
               type="button"
               onClick={handleGoogleLogin}
               disabled={isLoading}
-              className="w-full flex items-center justify-center gap-2.5 px-3 py-2 rounded-xl border border-stone-300 bg-white hover:bg-stone-50 text-xs font-semibold text-stone-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed shadow-xs"
+              className="w-full flex items-center justify-center gap-2.5 px-3 py-2 rounded-xl border border-amber-200 bg-white hover:bg-amber-50 text-xs font-semibold text-amber-800 transition-colors disabled:opacity-60 disabled:cursor-not-allowed shadow-xs"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24">
                 <path
@@ -142,16 +168,16 @@ export default function LoginPage() {
                   d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                 />
               </svg>
-              Continue with Google
+              {language === "hi" ? "Google से जारी रखें" : "Continue with Google"}
             </button>
 
             {/* Divider */}
             <div className="flex items-center gap-3 my-3.5">
-              <div className="flex-1 h-px bg-stone-200" />
-              <span className="text-[10px] font-semibold text-stone-400 uppercase tracking-wider">
-                or email
+              <div className="flex-1 h-px bg-amber-200" />
+              <span className="text-[10px] font-semibold text-amber-500 uppercase tracking-wider">
+                {language === "hi" ? "अथवा ईमेल" : "or email"}
               </span>
-              <div className="flex-1 h-px bg-stone-200" />
+              <div className="flex-1 h-px bg-amber-200" />
             </div>
 
             {/* Email/Password form */}
@@ -159,9 +185,9 @@ export default function LoginPage() {
               <div className="space-y-1">
                 <Label
                   htmlFor="login-email"
-                  className="text-xs font-semibold text-stone-700"
+                  className="text-xs font-semibold text-amber-800"
                 >
-                  Email Address <span className="text-red-500">*</span>
+                  {language === "hi" ? "ईमेल पता" : "Email Address"} <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="login-email"
@@ -170,7 +196,7 @@ export default function LoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   autoComplete="off"
-                  className="h-9.5 rounded-lg border-stone-300 bg-white text-xs text-stone-900 focus:border-orange-500 focus:ring-orange-500/20"
+                  className="h-9.5 rounded-lg border-amber-200 bg-white text-xs text-amber-950 focus:border-orange-500 focus:ring-orange-500/20"
                 />
               </div>
 
@@ -178,15 +204,15 @@ export default function LoginPage() {
                 <div className="flex items-center justify-between">
                   <Label
                     htmlFor="login-password"
-                    className="text-xs font-semibold text-stone-700"
+                    className="text-xs font-semibold text-amber-800"
                   >
-                    Password <span className="text-red-500">*</span>
+                    {language === "hi" ? "पासवर्ड" : "Password"} <span className="text-red-500">*</span>
                   </Label>
                   <button
                     type="button"
                     className="text-[11px] text-orange-600 hover:text-orange-700 font-medium transition-colors"
                   >
-                    Forgot password?
+                    {language === "hi" ? "पासवर्ड भूल गए?" : "Forgot password?"}
                   </button>
                 </div>
                 <div className="relative">
@@ -197,13 +223,18 @@ export default function LoginPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     autoComplete="current-password"
-                    className="h-9.5 rounded-lg border-stone-300 bg-white text-xs text-stone-900 focus:border-orange-500 focus:ring-orange-500/20 pr-9"
+                    className="h-9.5 rounded-lg border-amber-200 bg-white text-xs text-amber-950 focus:border-orange-500 focus:ring-orange-500/20 pr-9"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 transition-colors p-1"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-amber-400 hover:text-amber-600 transition-colors p-1"
                     tabIndex={-1}
+                    aria-label={
+                      showPassword
+                        ? language === "hi" ? "पासवर्ड छिपाएँ" : "Hide password"
+                        : language === "hi" ? "पासवर्ड दिखाएँ" : "Show password"
+                    }
                   >
                     {showPassword ? (
                       <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
@@ -222,24 +253,24 @@ export default function LoginPage() {
                 {isLoading ? (
                   <span className="flex items-center gap-2">
                     <svg className="animate-spin h-3.5 w-3.5" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" /></svg>
-                    Signing in...
+                    {language === "hi" ? "साइन इन हो रहा है..." : "Signing in..."}
                   </span>
                 ) : (
-                  "Sign In"
+                  language === "hi" ? "साइन इन करें" : "Sign In"
                 )}
               </Button>
             </form>
           </div>
 
           {/* Footer */}
-          <div className="px-5 py-3 bg-stone-50 border-t border-stone-200/80 text-center">
-            <p className="text-xs text-stone-600">
-              Don&apos;t have an account?{" "}
+          <div className="px-5 py-3 bg-amber-50 border-t border-amber-100 text-center">
+            <p className="text-xs text-amber-700">
+              {language === "hi" ? "खाता नहीं है?" : "Don't have an account?"}{" "}
               <Link
                 href="/register"
                 className="font-semibold text-orange-600 hover:text-orange-700 transition-colors"
               >
-                Create Account
+                {language === "hi" ? "खाता बनाएँ" : "Create Account"}
               </Link>
             </p>
           </div>

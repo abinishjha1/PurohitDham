@@ -8,7 +8,7 @@ import React, {
   useCallback,
   type ReactNode,
 } from "react";
-import type { User, GoogleLoginRequest } from "@/types/auth";
+import type { User, GoogleLoginRequest, AuthResponse } from "@/types/auth";
 import { UserRole } from "@/types/auth";
 import {
   getMe,
@@ -24,9 +24,9 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  login: (data: LoginRequest) => Promise<void>;
-  register: (data: RegisterRequest) => Promise<void>;
-  googleLogin: (data: GoogleLoginRequest) => Promise<void>;
+  login: (data: LoginRequest) => Promise<AuthResponse>;
+  register: (data: RegisterRequest) => Promise<AuthResponse>;
+  googleLogin: (data: GoogleLoginRequest) => Promise<AuthResponse>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
   hasRole: (...roles: UserRole[]) => boolean;
@@ -75,16 +75,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (data: LoginRequest) => {
     const response = await apiLogin(data);
     setUser(response.user);
+    return response;
   };
 
   const register = async (data: RegisterRequest) => {
     const response = await apiRegister(data);
     setUser(response.user);
+    return response;
   };
 
   const googleLogin = async (data: GoogleLoginRequest) => {
     const response = await apiGoogleLogin(data);
     setUser(response.user);
+    return response;
   };
 
   const logout = async () => {

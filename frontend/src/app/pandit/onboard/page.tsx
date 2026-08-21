@@ -1,13 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { onboardPandit } from "@/lib/api/pandits";
+import { SiteHeader } from "@/components/layout/SiteHeader";
+import { SiteFooter } from "@/components/layout/SiteFooter";
 
 const AVAILABLE_PUJAS = [
   { slug: "griha-pravesh-puja", label: "Griha Pravesh & Vastu Shanti (गृह प्रवेश)" },
@@ -155,25 +156,12 @@ export default function PanditOnboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-stone-50 text-stone-900 flex flex-col">
-      {/* Header */}
-      <header className="sticky top-0 z-40 bg-white border-b border-stone-200 shadow-xs">
-        <div className="max-w-4xl mx-auto flex items-center justify-between h-16 px-4">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="text-orange-600 text-xl font-bold">ॐ</span>
-            <span className="text-lg font-extrabold tracking-tight text-stone-900">
-              Purohit<span className="text-orange-600">dham</span>
-            </span>
-          </Link>
-          <span className="text-xs font-semibold text-stone-500">
-            Pandit Acharya Onboarding
-          </span>
-        </div>
-      </header>
+    <div className="min-h-screen bg-amber-50/30 text-amber-950 flex flex-col">
+      <SiteHeader />
 
       {/* Main Container */}
       <main className="flex-1 max-w-3xl mx-auto w-full px-4 py-8">
-        <div className="bg-white rounded-2xl shadow-xl shadow-stone-900/5 border border-stone-200 overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-xl shadow-amber-900/5 border border-amber-100 overflow-hidden">
           {/* Saffron & Maroon Top Accent */}
           <div className="h-1.5 bg-gradient-to-r from-red-800 via-amber-500 to-orange-600" />
 
@@ -183,10 +171,10 @@ export default function PanditOnboardPage() {
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-50 border border-orange-200 mb-2">
                 <span className="text-2xl">🕉️</span>
               </div>
-              <h1 className="text-2xl font-bold text-stone-900 tracking-tight">
+              <h1 className="text-2xl font-bold text-amber-900 tracking-tight">
                 Vedic Pandit Registration & Onboarding
               </h1>
-              <p className="text-xs text-stone-500 mt-1">
+              <p className="text-xs text-amber-600 mt-1">
                 Join India&apos;s most trusted network of verified Gurukul-trained Acharyas
               </p>
             </div>
@@ -202,14 +190,14 @@ export default function PanditOnboardPage() {
                   key={s.num}
                   onClick={() => setStep(s.num)}
                   className={`flex flex-col items-center cursor-pointer transition-all ${
-                    step === s.num ? "text-orange-600 font-bold" : "text-stone-400 font-medium"
+                    step === s.num ? "text-orange-600 font-bold" : "text-amber-500 font-medium"
                   }`}
                 >
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center text-xs mb-1 transition-all ${
                       step >= s.num
                         ? "bg-orange-600 text-white shadow-sm"
-                        : "bg-stone-100 text-stone-500 border border-stone-200"
+                        : "bg-amber-100 text-amber-600 border border-amber-100"
                     }`}
                   >
                     {s.num}
@@ -232,11 +220,11 @@ export default function PanditOnboardPage() {
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <Label className="text-xs font-semibold text-stone-700">Honorific Title</Label>
+                      <Label className="text-xs font-semibold text-amber-800">Honorific Title</Label>
                       <select
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                        className="w-full h-10 px-3 rounded-lg border border-stone-300 bg-white text-xs text-stone-900 focus:border-orange-500 focus:ring-orange-500/20"
+                        className="w-full h-10 px-3 rounded-lg border border-amber-200 bg-white text-xs text-amber-900 focus:border-orange-500 focus:ring-orange-500/20"
                       >
                         <option>Acharya (आचार्य)</option>
                         <option>Shastri (शास्त्री)</option>
@@ -246,13 +234,13 @@ export default function PanditOnboardPage() {
                     </div>
 
                     <div className="space-y-1">
-                      <Label className="text-xs font-semibold text-stone-700">
+                      <Label className="text-xs font-semibold text-amber-800">
                         Vedic Lineage / Veda Branch <span className="text-red-500">*</span>
                       </Label>
                       <select
                         value={vedicLineage}
                         onChange={(e) => setVedicLineage(e.target.value)}
-                        className="w-full h-10 px-3 rounded-lg border border-stone-300 bg-white text-xs text-stone-900 focus:border-orange-500 focus:ring-orange-500/20"
+                        className="w-full h-10 px-3 rounded-lg border border-amber-200 bg-white text-xs text-amber-900 focus:border-orange-500 focus:ring-orange-500/20"
                       >
                         <option>Shukla Yajurveda (शुक्ल यजुर्वेद - माध्यन्दिन शाखा)</option>
                         <option>Krishna Yajurveda (कृष्ण यजुर्वेद - तैत्तिरीय शाखा)</option>
@@ -265,7 +253,7 @@ export default function PanditOnboardPage() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <Label className="text-xs font-semibold text-stone-700">
+                      <Label className="text-xs font-semibold text-amber-800">
                         Gurukul / Sanskrit University <span className="text-red-500">*</span>
                       </Label>
                       <Input
@@ -274,18 +262,18 @@ export default function PanditOnboardPage() {
                         onChange={(e) => setGurukulName(e.target.value)}
                         placeholder="e.g. Sampurnanand Sanskrit Vishwavidyalaya, Varanasi"
                         required
-                        className="h-10 rounded-lg border-stone-300 text-xs focus:border-orange-500"
+                        className="h-10 rounded-lg border-amber-200 text-xs focus:border-orange-500"
                       />
                     </div>
 
                     <div className="space-y-1">
-                      <Label className="text-xs font-semibold text-stone-700">
+                      <Label className="text-xs font-semibold text-amber-800">
                         Degree / Qualification <span className="text-red-500">*</span>
                       </Label>
                       <select
                         value={educationDegree}
                         onChange={(e) => setEducationDegree(e.target.value)}
-                        className="w-full h-10 px-3 rounded-lg border border-stone-300 bg-white text-xs text-stone-900 focus:border-orange-500 focus:ring-orange-500/20"
+                        className="w-full h-10 px-3 rounded-lg border border-amber-200 bg-white text-xs text-amber-900 focus:border-orange-500 focus:ring-orange-500/20"
                       >
                         <option>Acharya (M.A. Sanskrit / Karmakand)</option>
                         <option>Shastri (B.A. Sanskrit)</option>
@@ -297,7 +285,7 @@ export default function PanditOnboardPage() {
                   </div>
 
                   <div className="space-y-1">
-                    <Label className="text-xs font-semibold text-stone-700">
+                    <Label className="text-xs font-semibold text-amber-800">
                       Years of Vedic Ritual Experience: <span className="font-bold text-orange-600">{experienceYears} Years</span>
                     </Label>
                     <input
@@ -311,13 +299,13 @@ export default function PanditOnboardPage() {
                   </div>
 
                   <div className="space-y-1">
-                    <Label className="text-xs font-semibold text-stone-700">Short Bio / About Your Experience</Label>
+                    <Label className="text-xs font-semibold text-amber-800">Short Bio / About Your Experience</Label>
                     <textarea
                       rows={3}
                       value={bio}
                       onChange={(e) => setBio(e.target.value)}
                       placeholder="Share a brief introduction about your Gurukul training, expertise in Hawan, and dedication to Vedic traditions..."
-                      className="w-full p-2.5 rounded-lg border border-stone-300 text-xs text-stone-900 focus:border-orange-500 focus:ring-orange-500/20"
+                      className="w-full p-2.5 rounded-lg border border-amber-200 text-xs text-amber-900 focus:border-orange-500 focus:ring-orange-500/20"
                     />
                   </div>
 
@@ -333,14 +321,14 @@ export default function PanditOnboardPage() {
               {step === 2 && (
                 <div className="space-y-5">
                   <div>
-                    <Label className="text-xs font-bold text-stone-800 block mb-1">
+                    <Label className="text-xs font-bold text-amber-800 block mb-1">
                       Select All Pujas & Rituals You Can Perform: <span className="text-red-500">*</span>
                     </Label>
-                    <p className="text-[11px] text-stone-500 mb-3">
+                    <p className="text-[11px] text-amber-600 mb-3">
                       Select all ceremonies you are qualified to perform as the lead Purohit ({selectedPujas.length} Selected)
                     </p>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-64 overflow-y-auto p-3 rounded-xl border border-stone-200 bg-stone-50/50">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-64 overflow-y-auto p-3 rounded-xl border border-amber-100 bg-amber-50/50">
                       {AVAILABLE_PUJAS.map((p) => {
                         const isChecked = selectedPujas.includes(p.slug);
                         return (
@@ -349,7 +337,7 @@ export default function PanditOnboardPage() {
                             className={`flex items-center gap-2.5 p-2 rounded-lg border text-xs cursor-pointer transition-all ${
                               isChecked
                                 ? "bg-orange-50 border-orange-400 text-orange-950 font-semibold"
-                                : "bg-white border-stone-200 text-stone-700 hover:border-stone-300"
+                                : "bg-white border-amber-100 text-amber-800 hover:border-amber-200"
                             }`}
                           >
                             <input
@@ -366,7 +354,7 @@ export default function PanditOnboardPage() {
                   </div>
 
                   <div>
-                    <Label className="text-xs font-bold text-stone-800 block mb-1">
+                    <Label className="text-xs font-bold text-amber-800 block mb-1">
                       Languages Spoken / Mantra Chanting: <span className="text-red-500">*</span>
                     </Label>
                     <div className="flex flex-wrap gap-2 pt-1">
@@ -379,8 +367,8 @@ export default function PanditOnboardPage() {
                             onClick={() => toggleLanguage(l)}
                             className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
                               isSelected
-                                ? "bg-stone-900 text-white border-stone-900 shadow-xs"
-                                : "bg-white text-stone-600 border-stone-200 hover:border-stone-300"
+                                ? "bg-amber-900 text-white border-amber-900 shadow-xs"
+                                : "bg-white text-amber-700 border-amber-100 hover:border-amber-200"
                             }`}
                           >
                             {isSelected ? "✓ " : "+ "}
@@ -391,7 +379,7 @@ export default function PanditOnboardPage() {
                     </div>
                   </div>
 
-                  <div className="flex justify-between pt-4 border-t border-stone-100">
+                  <div className="flex justify-between pt-4 border-t border-amber-100">
                     <Button type="button" variant="outline" onClick={() => setStep(1)} className="text-xs">
                       ← Back
                     </Button>
@@ -436,7 +424,7 @@ export default function PanditOnboardPage() {
 
                   {/* Manual Address Fields */}
                   <div className="space-y-1">
-                    <Label className="text-xs font-semibold text-stone-700">
+                    <Label className="text-xs font-semibold text-amber-800">
                       Street / House Address <span className="text-red-500">*</span>
                     </Label>
                     <Input
@@ -445,13 +433,13 @@ export default function PanditOnboardPage() {
                       onChange={(e) => setStreetAddress(e.target.value)}
                       placeholder="House No., Street / Mandir Lane, Area"
                       required
-                      className="h-10 rounded-lg border-stone-300 text-xs"
+                      className="h-10 rounded-lg border-amber-200 text-xs"
                     />
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div className="space-y-1">
-                      <Label className="text-xs font-semibold text-stone-700">
+                      <Label className="text-xs font-semibold text-amber-800">
                         City <span className="text-red-500">*</span>
                       </Label>
                       <Input
@@ -460,12 +448,12 @@ export default function PanditOnboardPage() {
                         onChange={(e) => setCity(e.target.value)}
                         placeholder="e.g. Varanasi / Delhi"
                         required
-                        className="h-10 rounded-lg border-stone-300 text-xs"
+                        className="h-10 rounded-lg border-amber-200 text-xs"
                       />
                     </div>
 
                     <div className="space-y-1">
-                      <Label className="text-xs font-semibold text-stone-700">
+                      <Label className="text-xs font-semibold text-amber-800">
                         State <span className="text-red-500">*</span>
                       </Label>
                       <Input
@@ -474,12 +462,12 @@ export default function PanditOnboardPage() {
                         onChange={(e) => setState(e.target.value)}
                         placeholder="e.g. Uttar Pradesh"
                         required
-                        className="h-10 rounded-lg border-stone-300 text-xs"
+                        className="h-10 rounded-lg border-amber-200 text-xs"
                       />
                     </div>
 
                     <div className="space-y-1">
-                      <Label className="text-xs font-semibold text-stone-700">
+                      <Label className="text-xs font-semibold text-amber-800">
                         Pin Code <span className="text-red-500">*</span>
                       </Label>
                       <Input
@@ -489,13 +477,13 @@ export default function PanditOnboardPage() {
                         placeholder="e.g. 221001"
                         required
                         maxLength={6}
-                        className="h-10 rounded-lg border-stone-300 text-xs"
+                        className="h-10 rounded-lg border-amber-200 text-xs"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-1 pt-1">
-                    <Label className="text-xs font-semibold text-stone-700">
+                    <Label className="text-xs font-semibold text-amber-800">
                       Service Travel Radius: <span className="font-bold text-orange-600">{serviceRadiusKm} KM</span>
                     </Label>
                     <input
@@ -509,7 +497,7 @@ export default function PanditOnboardPage() {
                     />
                   </div>
 
-                  <div className="flex justify-between pt-4 border-t border-stone-100">
+                  <div className="flex justify-between pt-4 border-t border-amber-100">
                     <Button type="button" variant="outline" onClick={() => setStep(2)} className="text-xs">
                       ← Back
                     </Button>
@@ -527,6 +515,7 @@ export default function PanditOnboardPage() {
           </div>
         </div>
       </main>
+      <SiteFooter />
     </div>
   );
 }

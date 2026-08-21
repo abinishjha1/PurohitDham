@@ -22,7 +22,13 @@ async def lifespan(app: FastAPI):
         import app.models.user  # noqa: F401
         import app.models.puja  # noqa: F401
         import app.models.pandit  # noqa: F401
+        import app.models.location  # noqa: F401
+        import app.models.setting  # noqa: F401
+        import app.models.content  # noqa: F401
         from app.services.puja_service import seed_pujas_and_categories_if_empty
+        from app.services.location_service import seed_locations_if_empty
+        from app.services.setting_service import seed_settings_if_empty
+        from app.services.content_service import seed_content_if_empty
 
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
@@ -32,6 +38,10 @@ async def lifespan(app: FastAPI):
             await seed_pujas_and_categories_if_empty(session)
             from app.services.auth_service import seed_default_admin_if_not_exists
             await seed_default_admin_if_not_exists(session)
+            # Dynamic content foundation — admin-managed locations, settings & homepage content
+            await seed_locations_if_empty(session)
+            await seed_settings_if_empty(session)
+            await seed_content_if_empty(session)
 
     yield
     # Shutdown
